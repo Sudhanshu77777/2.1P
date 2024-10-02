@@ -3,24 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Input Form</title>
-    <link rel="stylesheet" href="/public/css/style.css">
+    <title>Sign Up for Our Daily Insider</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Email Input Form</h2>
-        <form class="Sign up form" action="http://localhost:3000/send-welcome-email" method="POST">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <button type="submit">Submit</button>
-        </form>
+        <div class="sign-up-form">
+            <label for="email"><b>SIGN UP FOR OUR DAILY INSIDER</b></label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <button type="submit" id="subscribe-btn">Subscribe</button>
+        </div>
+        <p id="message" style="color: green; display: none;"></p>
     </div>
-    <script>
-    const form = document.getElementById('email-form');
 
-        form.addEventListener('submit', (e) => {
+    <script>
+        const form = document.getElementById('subscribe-btn');
+
+        form.addEventListener('click', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
-        });</script>
+
+            const response = await fetch('http://localhost:3000/send-welcome-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const result = await response.json();
+            
+            // Display the success message
+            const messageElement = document.getElementById('message');
+            if (result.message) {
+                messageElement.textContent = result.message;
+                messageElement.style.display = 'block';
+            } else {
+                messageElement.textContent = 'Error sending email.';
+                messageElement.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
